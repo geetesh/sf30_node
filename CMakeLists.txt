@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(s30_node)
+project(sf30_node)
 
 
 find_package(catkin REQUIRED COMPONENTS
@@ -23,7 +23,7 @@ include_directories(
 )
 
 
-add_executable(${PROJECT_NAME} src/s30_node.cpp)
+add_executable(${PROJECT_NAME} src/sf30_node.cpp)
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
 
 

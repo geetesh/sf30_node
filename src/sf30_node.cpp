@@ -77,10 +77,10 @@ void set_blocking (int fd, int should_block)
 
 int main(int argc, char **argv) {
 
-  ros::init(argc, argv, "s30_node");
+  ros::init(argc, argv, "sf30_node");
   ros::NodeHandle n;
   
-  ros::Publisher laser_pub = n.advertise<sensor_msgs::LaserScan>("/s30/range",1);
+  ros::Publisher laser_pub = n.advertise<sensor_msgs::LaserScan>("/sf30/range",1);
   
   ros::Rate loop_rate(50);
  
@@ -146,7 +146,7 @@ int main(int argc, char **argv) {
       last_time=now;
       
       sensor_msgs::LaserScan data;
-      data.header.frame_id = "s30";
+      data.header.frame_id = "sf30";
       data.header.stamp = ros::Time::now();
       data.scan_time =  duration.toSec();
       data.range_max=100.0;

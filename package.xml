@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>s30_node</name>
+  <name>sf30_node</name>
   <version>0.0.0</version>
-  <description>The s30_node package</description>
+  <description>The sf30_node package</description>
 
   
   <maintainer email="gpereira@ufmg.br">gpereira</maintainer>
