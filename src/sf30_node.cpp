@@ -147,12 +147,11 @@ int main(int argc, char **argv) {
 		nc = read (fdes, buf, 1); // second decimal digit
 		num=num+atof(buf)/100.0;
 		
-		tcflush( fdes, TCIFLUSH ); 
-		
 		break;
 	   }
-      }  
+      }
       
+      tcflush( fdes, TCIFLUSH );
          
       ros::Time now = ros::Time::now();
       ros::Duration duration=now-last_time;
