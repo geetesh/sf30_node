@@ -18,7 +18,7 @@ The node assume the following setup for the laser (I used the [Lightware](http:/
 
 ```
 
-Before living the terminal, make sure the sensor is sending messages of the form:
+Before you leave the terminal, make sure the sensor is sending messages of the form (hit space to make it happen):
 
 
 ```
