@@ -96,7 +96,7 @@ int main(int argc, char **argv) {
   ros::Rate loop_rate(50);
  
   std::string s;
-  n.param<std::string>("s30_node/portname", s, "/dev/ttyUSB0");
+  n.param<std::string>("sf30_node/portname", s, "/dev/ttyUSB0");
   const char * portname = s.c_str();
   fdes = open (portname, O_RDWR | O_NOCTTY | O_SYNC);
   if (fdes < 0)
