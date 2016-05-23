@@ -85,7 +85,7 @@ int main(int argc, char **argv) {
   ros::Rate loop_rate(50);
  
   std::string s;
-  n.param<std::string>("s30_node/portname", s, "/dev/serial/by-id/usb-FTDI_FT230X_Basic_UART_DJ00QNWX-if00-port0");
+  n.param<std::string>("s30_node/portname", s, "/dev/ttyUSB0");
   const char * portname = s.c_str();
   int fd = open (portname, O_RDWR | O_NOCTTY | O_SYNC);
   if (fd < 0)
