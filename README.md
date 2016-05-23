@@ -65,7 +65,7 @@ roslaunch sf30_node sf30.launch
 
 ```
 
-The message of type `sensor_msgs::LaserScan` will be published in topic `/sf30/range` at 50Hz. 
+The message of type `sensor_msgs::LaserScan` will be published in topic `/sf30/range` at 50Hz. The intensities field on this message means data confidence. It is `1` if we can trust the given range.
 
 ### Who do I talk to? ###
 
