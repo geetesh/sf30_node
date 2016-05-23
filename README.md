@@ -55,7 +55,7 @@ catkin_make
 
 ###To run the package: ###
 
-Run:
+In a terminal run:
 
 ```
 #!bash
