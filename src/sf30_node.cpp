@@ -17,6 +17,15 @@
 #include <fcntl.h>    /* For O_RDWR */
 #include <sensor_msgs/LaserScan.h>
 
+int fdes;
+
+void SigintHandler(int sig)
+{
+  close(fdes);
+  ros::Duration(0.5).sleep();
+  ros::shutdown();
+}
+
 int set_interface_attribs (int fd, int speed, int parity)
 {
         struct termios tty;
@@ -80,6 +89,8 @@ int main(int argc, char **argv) {
   ros::init(argc, argv, "sf30_node");
   ros::NodeHandle n;
   
+  signal(SIGINT, SigintHandler);
+  
   ros::Publisher laser_pub = n.advertise<sensor_msgs::LaserScan>("/sf30/range",1);
   
   ros::Rate loop_rate(50);
@@ -87,33 +98,33 @@ int main(int argc, char **argv) {
   std::string s;
   n.param<std::string>("s30_node/portname", s, "/dev/ttyUSB0");
   const char * portname = s.c_str();
-  int fd = open (portname, O_RDWR | O_NOCTTY | O_SYNC);
-  if (fd < 0)
+  fdes = open (portname, O_RDWR | O_NOCTTY | O_SYNC);
+  if (fdes < 0)
   {
         ROS_ERROR("error %d opening %s: %s", errno, portname, strerror (errno));
         return 1;
   } 
-  set_interface_attribs (fd, B115200, 0);  // set speed to 115200 bps, 8n1 (no parity)
-  set_blocking (fd, 0);                    // set no blocking
+  set_interface_attribs (fdes, B115200, 0);  // set speed to 115200 bps, 8n1 (no parity)
+  set_blocking (fdes, 0);                    // set no blocking
 
   char buf[1];
   int nc, i;
   float num=0.0;
   int confidence=0;
-  nc = read (fd, buf, 10);
+  nc = read (fdes, buf, 10);
   ros::Time last_time=ros::Time::now();
  
   // Main loop
   while (ros::ok())
      {
       while(ros::ok){       
-           nc = read (fd, buf, 1);
+           nc = read (fdes, buf, 1);
 	   if (buf[0]=='\n'){
-	        nc = read (fd, buf, 1); // Linebreak
+	        nc = read (fdes, buf, 1); // Linebreak
 		i=1;
 		num=0.0;
 		do{
-		   nc = read (fd, buf, 1); 
+		   nc = read (fdes, buf, 1); 
 		   if (buf[0]=='-') // invalid data
 		     break;
 		   if (buf[0]!='.')
@@ -130,10 +141,10 @@ int main(int argc, char **argv) {
 		
 		confidence=1;
 		
-		nc = read (fd, buf, 1); // first decimal digit
+		nc = read (fdes, buf, 1); // first decimal digit
 		num=num+atof(buf)/10.0;
 		
-		nc = read (fd, buf, 1); // second decimal digit
+		nc = read (fdes, buf, 1); // second decimal digit
 		num=num+atof(buf)/100.0;
 		
 		break;
