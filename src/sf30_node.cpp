@@ -18,9 +18,11 @@
 #include <sensor_msgs/LaserScan.h>
 
 int fdes;
+bool exit_;
 
 void SigintHandler(int sig)
 {
+  exit_=true;
   close(fdes);
   ros::Duration(0.5).sleep();
   ros::shutdown();
@@ -111,42 +113,56 @@ int main(int argc, char **argv) {
   int nc, i;
   float num=0.0;
   int confidence=0;
-  nc = read (fdes, buf, 10);
+  tcflush( fdes, TCIFLUSH );
   ros::Time last_time=ros::Time::now();
- 
+  exit_=false;
+  
   // Main loop
-  while (ros::ok())
+  while (ros::ok() && !exit_)
      {
-      while(ros::ok){       
+      while(ros::ok && !exit_){ 
+	  
            nc = read (fdes, buf, 1);
-	   if (buf[0]=='\n'){
+	   if ((nc==1) && (buf[0]=='\n')){
 	        nc = read (fdes, buf, 1); // Linebreak
 		i=1;
 		num=0.0;
+		confidence=0;
+		if (nc!=1)
+		  break;
 		do{
 		   nc = read (fdes, buf, 1); 
+		   if (nc!=1)
+		     break;
 		   if (buf[0]=='-') // invalid data
 		     break;
-		   if (buf[0]!='.')
+		   if (buf[0]!='.'){
 		     num=num*i+atof(buf);
-		   i=i*10;
+		     i=i*10;
+		   }
 		}
 		while (buf[0]!='.');
 		
-		if (buf[0]=='-'){
+		if ((nc!=1) || (buf[0]=='-')){
 		  num=0.0;
-		  confidence=0;
 		  break;
-		}
-		
-		confidence=1;
+		}				
 		
 		nc = read (fdes, buf, 1); // first decimal digit
+		if ((nc!=1) || (buf[0]=='-')){
+		  num=0.0;
+		  break;
+		}	
 		num=num+atof(buf)/10.0;
 		
 		nc = read (fdes, buf, 1); // second decimal digit
+		if ((nc!=1) || (buf[0]=='-')){
+		  num=0.0;
+		  break;
+		}	
 		num=num+atof(buf)/100.0;
 		
+		confidence=1;
 		break;
 	   }
       }
