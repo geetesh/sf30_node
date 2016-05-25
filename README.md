@@ -1,4 +1,4 @@
-##This is a ROS node for [SF30 rangefinder*](http://www.lightware.co.za/shop/en/4-drone-altimeters) ##
+##This is a ROS node for [SF30 rangefinders*](http://www.lightware.co.za/shop/en/4-drone-altimeters) ##
 (*it is probably compatible with other models: SF02, SF10, SF11 - not tested!)
 
 The node assume the following setup for the laser (I used the [Lightware](http://www.lightware.co.za/shop/en/content/8-software) terminal from the manufacture):
