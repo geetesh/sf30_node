@@ -1,5 +1,5 @@
-##This is a ROS node for [sf30 rangefinder*](http://www.lightware.co.za/shop/en/4-drone-altimeters) ##
-(*it is probably compatible with the other models - not tested!)
+##This is a ROS node for [SF30 rangefinder*](http://www.lightware.co.za/shop/en/4-drone-altimeters) ##
+(*it is probably compatible with other models: SF02, SF10, SF11 - not tested!)
 
 The node assume the following setup for the laser (I used the [Lightware](http://www.lightware.co.za/shop/en/content/8-software) terminal from the manufacture):
 
@@ -54,7 +54,7 @@ catkin_make
 ```
 
 
-###To run the package: ###
+###To run the node: ###
 
 In a terminal run:
 
