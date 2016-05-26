@@ -2,11 +2,14 @@
 <package>
   <name>sf30_node</name>
   <version>0.0.0</version>
-  <description>The sf30_node package</description>
+  <description>The sf30_node package provides a driver for the sf30 laser range finder. </description>
 
   
-  <maintainer email="gpereira@ufmg.br">gpereira</maintainer>
+  <maintainer email="gpereira@ufmg.br">Guilherme Pereira</maintainer>
 
+  <url type="website">http://ros.org/wiki/sf30_node</url>
+
+  <author>Guilherme Pereira</author>
 
   <license>BSD</license>
 
