@@ -5,11 +5,11 @@
   <description>The sf30_node package provides a driver for the sf30 laser range finder. </description>
 
   
-  <maintainer email="gpereira@ufmg.br">Guilherme Pereira</maintainer>
+  <maintainer email="gpereira@cmu.edu">Guilherme Pereira (The AIR lab, Carnegie Mellon University)</maintainer>
 
   <url type="website">http://ros.org/wiki/sf30_node</url>
 
-  <author>Guilherme Pereira</author>
+  <author>Guilherme Pereira (The AIR lab, Carnegie Mellon University) </author>
 
   <license>BSD</license>
 
