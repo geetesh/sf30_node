@@ -71,3 +71,11 @@ The message of type `sensor_msgs::LaserScan` will be published in topic `/sf30/r
 ### Who do I talk to? ###
 
 * Guilherme Pereira - gpereira@ufmg.br
+
+### Final Remarks ###
+
+* The laser sensor uses a internal FTDI serial-to-USB converter. Therefore, your Linux system must provide support for this device. Most of distributions come with this support but some embedded distributions need to be set. [Here](http://elinux.org/Jetson/Tutorials/Program_An_Arduino) is a good tutorial on how to set the FTDI support on Jetson TK1 systems. It was tested on the DJI's Manifold.
+
+* Some embedded Linux distributions suspend their inactive USB ports to save power. This may cause the sensor to stop working after the first use. [Here](http://jetsonhacks.com/2015/05/27/usb-autosuspend-nvidia-jetson-tk1/) is how to disable the auto-suspend function to prevent problems.
+
+* FTDI devices create a file in the folder `/dev/serial/by-id/` that can be used as a unique identifier for the device. To use this identified, replace the parameter `portname` in the file `sf30.launch` from `/dev/ttyUSB0` to `/dev/serial/by-id/ID_OF_YOUR_DEVICE`. This is very useful when several devices are connected to the same computer. 
