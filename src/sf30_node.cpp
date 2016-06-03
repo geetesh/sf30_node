@@ -14,7 +14,7 @@
 #include <errno.h>
 #include <termios.h>
 #include <unistd.h>
-#include <fcntl.h>    /* For O_RDWR */
+#include <fcntl.h>    
 #include <sensor_msgs/LaserScan.h>
 
 int fdes;
@@ -85,6 +85,15 @@ void set_blocking (int fd, int should_block)
                 ROS_ERROR("error %d setting term attributes", errno);
 }
 
+bool isValidNumber(char a){
+  
+  if ((a>=48) && (a<=57))
+    return true;
+  else 
+    return false;
+  
+}
+
 
 int main(int argc, char **argv) {
 
@@ -103,11 +112,11 @@ int main(int argc, char **argv) {
   fdes = open (portname, O_RDWR | O_NOCTTY | O_SYNC);
   if (fdes < 0)
   {
-        ROS_ERROR("error %d opening %s: %s", errno, portname, strerror (errno));
+        ROS_ERROR("Error %d opening %s: %s", errno, portname, strerror (errno));
         return 1;
   } 
   set_interface_attribs (fdes, B115200, 0);  // set speed to 115200 bps, 8n1 (no parity)
-  set_blocking (fdes, 0);                    // set no blocking
+  set_blocking (fdes, 1);                    // set blocking
 
   char buf[1];
   int nc, i;
@@ -120,55 +129,61 @@ int main(int argc, char **argv) {
   // Main loop
   while (ros::ok() && !exit_)
      {
-      while(ros::ok && !exit_){ 
+       
+      tcflush( fdes, TCIFLUSH ); // to get the most recent data, flush the buffer
+      
+      while(ros::ok() && !exit_){ // format of the data 00.00 m\n\n
 	  
            nc = read (fdes, buf, 1);
-	   if ((nc==1) && (buf[0]=='\n')){
-	        nc = read (fdes, buf, 1); // Linebreak
-		i=1;
+	   
+	   if ((nc==1) && (buf[0]=='m')){ // Look for the 'm'
+	     
 		num=0.0;
 		confidence=0;
-		if (nc!=1)
-		  break;
-		do{
+	     
+		nc = read (fdes, buf, 1); // should be a Linebreak
+		if ((nc!=1) || buf[0]!=10)  break;
+		nc = read (fdes, buf, 1); // should be another Linebreak
+		if ((nc!=1) || buf[0]!=10)  break;
+		
+		i=1; 
+		do{ // Process the number before the point. 
 		   nc = read (fdes, buf, 1); 
-		   if (nc!=1)
-		     break;
-		   if (buf[0]=='-') // invalid data
-		     break;
-		   if (buf[0]!='.'){
+		   if ((nc==1) && (isValidNumber(buf[0]))){
 		     num=num*i+atof(buf);
 		     i=i*10;
 		   }
+		   else 
+		     break;
 		}
-		while (buf[0]!='.');
+		while(1);
 		
-		if ((nc!=1) || (buf[0]=='-')){
+		if ((nc!=1) || (buf[0]!='.')){ // In normal situation, only exit the loop if find the decimal point
 		  num=0.0;
 		  break;
 		}				
 		
-		nc = read (fdes, buf, 1); // first decimal digit
-		if ((nc!=1) || (buf[0]=='-')){
+		nc = read (fdes, buf, 1); // should be the first decimal digit
+		if ((nc!=1) || (!isValidNumber(buf[0]))){
 		  num=0.0;
 		  break;
 		}	
 		num=num+atof(buf)/10.0;
 		
-		nc = read (fdes, buf, 1); // second decimal digit
-		if ((nc!=1) || (buf[0]=='-')){
+		nc = read (fdes, buf, 1); // should be the second decimal digit
+		if ((nc!=1) || (!isValidNumber(buf[0]))){
 		  num=0.0;
 		  break;
 		}	
 		num=num+atof(buf)/100.0;
 		
-		confidence=1;
+		confidence=1; // If we got so far, we can thrust the number in num!
+		
 		break;
-	   }
-      }
-      
-      tcflush( fdes, TCIFLUSH );
-         
+	   } //if
+	   
+      } // while
+             
       ros::Time now = ros::Time::now();
       ros::Duration duration=now-last_time;
       last_time=now;
@@ -179,7 +194,7 @@ int main(int argc, char **argv) {
       data.scan_time =  duration.toSec();
       data.range_max=100.0;
       data.ranges.push_back(num);
-      data.intensities.push_back((double)confidence);
+      data.intensities.push_back((double)confidence); // Confidence = 0, range = 0 cannot be thrusted
       
       laser_pub.publish(data);
       
