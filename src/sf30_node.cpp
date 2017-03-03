@@ -102,7 +102,7 @@ int main(int argc, char **argv) {
   
   signal(SIGINT, SigintHandler);
   
-  ros::Publisher laser_pub = n.advertise<sensor_msgs::LaserScan>("/sf30/range",1);
+  ros::Publisher laser_pub = n.advertise<sensor_msgs::LaserScan>("range",1);
   
   ros::Rate loop_rate(50);
  

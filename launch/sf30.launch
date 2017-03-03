@@ -2,7 +2,7 @@
 <launch>   
 
   <!-- Start sf30_node --> 
-  <node name="sf30_node" pkg="sf30_node" type="sf30_node" output="screen">
+  <node name="sf30_node" ns="sf30" pkg="sf30_node" type="sf30_node" output="screen">
 	
     <param name="portname" type="string" value="/dev/ttyUSB0" />
    	
