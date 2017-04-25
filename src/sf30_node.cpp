@@ -104,7 +104,7 @@ int main(int argc, char **argv) {
   
   ros::Publisher laser_pub = n.advertise<sensor_msgs::LaserScan>("range",1);
   
-  ros::Rate loop_rate(50);
+  ros::Rate loop_rate(100);
  
   std::string s;
   n.param<std::string>("sf30_node/portname", s, "/dev/ttyUSB0");
@@ -199,7 +199,7 @@ int main(int argc, char **argv) {
       laser_pub.publish(data);
       
       ros::spinOnce();
-      loop_rate.sleep();  
+      loop_rate.sleep();
       
      }
 }
